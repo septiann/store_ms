@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SupplierController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,4 +35,15 @@ Route::controller(CategoryController::class)->group(function() {
     Route::get('/categories/{id}', 'show');
     Route::put('/categories/{id}', 'update');
     Route::delete('/categories/{id}', 'destroy');
+});
+
+Route::controller(SupplierController::class)->group(function() {
+    Route::get('/suppliers', 'index');
+    Route::post('/suppliers', 'store');
+    Route::get('/suppliers/{id}', 'show');
+    Route::put('/suppliers/{id}', 'update');
+    Route::delete('/suppliers/{id}', 'destroy');
+
+    Route::post('/suppliers/detail', 'storeDetail');
+    Route::get('/suppliers/detail/{id}', 'showDetail');
 });
