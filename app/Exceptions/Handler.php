@@ -38,37 +38,43 @@ class Handler extends ExceptionHandler
             return response()->json([
                 'success' => false,
                 'message' => 'This method is not allowed for the requested route',
+                'data' => '',
                 'errors' => []
             ], 405);
         } else if ($e instanceof NotFoundHttpException) {
             return response()->json([
                 'success' => false,
                 'message' => 'This route is not found',
+                'data' => '',
                 'errors' => []
             ], 404);
         } else if ($e instanceof BadMethodCallException) {
             return response()->json([
                 'success' => false,
                 'message' => 'Bad method called',
+                'data' => '',
                 'errors' => []
             ], 404);
         } else if ($e instanceof ValidationException) {
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed!',
+                'data' => '',
                 'errors' => $e->errors()
             ], 422);
         } else if ($e instanceof ModelNotFoundException) {
             return response()->json([
                 'success' => false,
                 'message' => 'Data not found!',
+                'data' => '',
                 'errors' => []
             ], 404);
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'Internal error occurred',
-                'errors' => $e
+                'message' => 'There is something happened. Please contact our support.',
+                'data' => '',
+                'errors' => $request . $e
             ], 500);
         }
     }

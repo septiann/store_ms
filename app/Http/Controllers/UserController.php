@@ -24,7 +24,8 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'message' => $message,
-            'data' => $users
+            'data' => $users,
+            'errors' => []
         ], Response::HTTP_OK);
     }
 
@@ -42,28 +43,30 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'User created successfully!',
-            'data' => []
+            'data' => '',
+            'errors' => []
         ], Response::HTTP_CREATED);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(string $id)
     {
         $user = User::findOrFail($id);
 
         return response()->json([
             'success' => true,
             'message' => '',
-            'data' => $user
+            'data' => $user,
+            'errors' => []
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
         // Validation
         $request->validate([
@@ -83,14 +86,15 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'User updated successfully!',
-            'data' => $post
+            'data' => $post,
+            'errors' => []
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(string $id)
     {
         $deleteUser = User::findOrFail($id);
 
@@ -99,7 +103,8 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'User deleted successfully!',
-            'data' => []
+            'data' => '',
+            'errors' => []
         ]);
     }
 }
