@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
@@ -66,4 +67,12 @@ Route::controller(CustomerController::class)->group(function() {
     Route::get('/customers/{id}', 'show');
     Route::put('/customers/{id}', 'update');
     Route::delete('/customers/{id}', 'destroy');
+});
+
+Route::controller(EmployeeController::class)->group(function() {
+    Route::get('/employees', 'index');
+    Route::post('/employees', 'store');
+    Route::get('/employees/{id}', 'show');
+    Route::put('/employees/{id}', 'update');
+    Route::delete('/employees/{id}', 'destroy');
 });
