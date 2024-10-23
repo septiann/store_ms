@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
@@ -57,4 +58,12 @@ Route::controller(ProductController::class)->group(function() {
     Route::delete('/products/{id}', 'destroy');
 
     Route::post('/products/{id}/restock', 'restockProduct');
+});
+
+Route::controller(CustomerController::class)->group(function() {
+    Route::get('/customers', 'index');
+    Route::post('/customers', 'store');
+    Route::get('/customers/{id}', 'show');
+    Route::put('/customers/{id}', 'update');
+    Route::delete('/customers/{id}', 'destroy');
 });
