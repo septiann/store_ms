@@ -1,8 +1,9 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -46,4 +47,14 @@ Route::controller(SupplierController::class)->group(function() {
 
     Route::post('/suppliers/detail', 'storeDetail');
     Route::get('/suppliers/detail/{id}', 'showDetail');
+});
+
+Route::controller(ProductController::class)->group(function() {
+    Route::get('/products', 'index');
+    Route::post('/products', 'store');
+    Route::get('/products/{id}', 'show');
+    Route::put('/products/{id}', 'update');
+    Route::delete('/products/{id}', 'destroy');
+
+    Route::post('/products/{id}/restock', 'restockProduct');
 });
