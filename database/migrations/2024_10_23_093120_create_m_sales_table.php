@@ -11,12 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('sales')) {
-            Schema::create('sales', function (Blueprint $table) {
+        if (!Schema::hasTable('m_sales')) {
+            Schema::create('m_sales', function (Blueprint $table) {
                 $table->id();
                 $table->timestamp('transaction_date')->useCurrent();
                 $table->unsignedInteger('employee_id');
+                $table->unsignedInteger('customer_id');
+                $table->decimal('total_amount', 10, 2);
+                $table->string('payment_method',50);
                 $table->timestamps();
+
+                $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
+                $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             });
         }
     }
@@ -26,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sales');
+        Schema::dropIfExists('m_sales');
     }
 };
