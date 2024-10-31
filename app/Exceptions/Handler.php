@@ -3,11 +3,13 @@
 namespace App\Exceptions;
 
 use BadMethodCallException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use DB;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -34,6 +36,10 @@ class Handler extends ExceptionHandler
     }
 
     public function render($request, Throwable $e) {
+        if (DB::transactionLevel() > 0) {
+            DB::rollback();
+        }
+
         if ($e instanceof MethodNotAllowedHttpException) {
             return response()->json([
                 'success' => false,
@@ -63,12 +69,21 @@ class Handler extends ExceptionHandler
                 'errors' => $e->errors()
             ], 422);
         } else if ($e instanceof ModelNotFoundException) {
+            $modelName = class_basename($e->getModel());
+
             return response()->json([
                 'success' => false,
-                'message' => 'Data not found!',
+                'message' => "{$modelName} not found!",
                 'data' => '',
                 'errors' => []
             ], 404);
+        } else if ($e instanceof AuthenticationException) {
+            return response()->json([
+                'success' => false,
+                'message' => "Unauthenticated",
+                'data' => '',
+                'errors' => []
+            ], 401);
         } else {
             return response()->json([
                 'success' => false,
