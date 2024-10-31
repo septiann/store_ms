@@ -4,6 +4,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -25,11 +26,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::controller(UserController::class)->group(function() {
-    Route::get('/users', 'index');
-    Route::post('/users', 'store');
+    Route::get('/users', 'index')->middleware('auth:sanctum');
     Route::get('/users/{id}', 'show');
     Route::put('/users/{id}', 'update');
     Route::delete('/users/{id}', 'destroy');
+
+    Route::post('/register', 'register');
+    Route::post('/login', 'login');
+    Route::post('/logout', 'logout')->middleware('auth:sanctum');
 });
 
 Route::controller(CategoryController::class)->group(function() {
