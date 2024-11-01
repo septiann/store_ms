@@ -11,6 +11,7 @@ use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use DB;
 use Throwable;
+use PDOException;
 
 class Handler extends ExceptionHandler
 {
@@ -80,10 +81,17 @@ class Handler extends ExceptionHandler
         } else if ($e instanceof AuthenticationException) {
             return response()->json([
                 'success' => false,
-                'message' => "Unauthenticated",
+                'message' => "Unauthorized",
                 'data' => '',
                 'errors' => []
             ], 401);
+        } else if ($e instanceof PDOException) {
+            return response()->json([
+                'success' => false,
+                'message' => "There is something happened when connect to database. Please contact our support.",
+                'data' => '',
+                'errors' => $e
+            ], 500);
         } else {
             return response()->json([
                 'success' => false,

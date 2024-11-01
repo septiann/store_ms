@@ -27,7 +27,7 @@ class UserController extends Controller
             'message' => $message,
             'data' => $users,
             'errors' => []
-        ], Response::HTTP_OK);
+        ], 404);
     }
 
     /**
@@ -46,22 +46,22 @@ class UserController extends Controller
             'message' => 'User created successfully!',
             'data' => '',
             'errors' => []
-        ], Response::HTTP_CREATED);
+        ], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $username)
     {
-        $user = User::findOrFail($id);
+        $user = User::where('username', $username)->first();
 
         return response()->json([
             'success' => true,
             'message' => '',
             'data' => $user,
             'errors' => []
-        ]);
+        ], 200);
     }
 
     /**
@@ -73,6 +73,8 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|max:50|string',
             'email' => 'required|email:rfc,dns|max:30|unique:users,email,'.$id,
+            'username' => 'required|min:4|max:25|alpha_dash:ascii|unique:users,username,'.$id,
+            'photo' => 'image|file|max:1024'
         ]);
 
         // Action
@@ -89,7 +91,7 @@ class UserController extends Controller
             'message' => 'User updated successfully!',
             'data' => $post,
             'errors' => []
-        ]);
+        ], 200);
     }
 
     /**
@@ -106,7 +108,7 @@ class UserController extends Controller
             'message' => 'User deleted successfully!',
             'data' => '',
             'errors' => []
-        ]);
+        ], 200);
     }
 
     public function login(Request $request) {
@@ -116,10 +118,10 @@ class UserController extends Controller
         ]);
 
         $user = User::where('email', $validatedData['email'])->first();
-        if (!$user || Hash::check($validatedData['password'], $user->password)) {
+        if (! $user || ! Hash::check($validatedData['password'], $user->password)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized - Invalid credentials!',
+                'message' => 'Invalid credentials',
                 'data' => '',
                 'errors' => []
             ], 401);
@@ -134,7 +136,7 @@ class UserController extends Controller
                 'access_token' => $token
             ],
             'errors' => []
-        ]);
+        ], 200);
     }
 
     public function logout() {
@@ -145,6 +147,6 @@ class UserController extends Controller
             'message' => 'Logout success.',
             'data' => [],
             'errors' => []
-        ]);
+        ], 200);
     }
 }
