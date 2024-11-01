@@ -65,22 +65,20 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::put('/{id}', [ProductController::class, 'update']);
         Route::delete('/{id}', [ProductController::class, 'destroy']);
     });
+
+    // Suppliers
+    Route::prefix('suppliers')->group(function () {
+        Route::get('/', [SupplierController::class, 'index']);
+        Route::post('/', [SupplierController::class, 'store']);
+        Route::get('/{id}', [SupplierController::class, 'show']);
+        Route::put('/{id}', [SupplierController::class, 'update']);
+        Route::delete('/{id}', [SupplierController::class, 'destroy']);
+    });
 });
 
 // -----------------------------------------------------------------------
 
-/* Route::controller(SupplierController::class)->group(function() {
-    Route::get('/suppliers', 'index');
-    Route::post('/suppliers', 'store');
-    Route::get('/suppliers/{id}', 'show');
-    Route::put('/suppliers/{id}', 'update');
-    Route::delete('/suppliers/{id}', 'destroy');
-
-    Route::post('/suppliers/detail', 'storeDetail');
-    Route::get('/suppliers/detail/{id}', 'showDetail');
-});
-
-Route::controller(CustomerController::class)->group(function() {
+/* Route::controller(CustomerController::class)->group(function() {
     Route::get('/customers', 'index');
     Route::post('/customers', 'store');
     Route::get('/customers/{id}', 'show');

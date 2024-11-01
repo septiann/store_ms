@@ -22,10 +22,16 @@ class StoreSupplierRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'contact_name' => 'required|string|max:15',
-            'phone_number' => 'required|numeric|min_digits:9|max_digits:14|unique:m_suppliers,phone_number',
-            'address' => 'required'
+            'name' => 'required|string|max:50',
+            'email' => 'nullable|email|max:50|unique:suppliers,email',
+            'phone' => 'required|string|max:25|unique:suppliers,phone',
+            'address' => 'required|string|max:100',
+            'shop_name' => 'nullable|string|max:50',
+            'type' => 'required|string|max:25',
+            'photo' => 'nullable|image|file|max:1024',
+            'bank_name' => 'nullable|max:25',
+            'account_holder' => 'nullable|max:50',
+            'account_number' => 'nullable|max:25',
         ];
     }
 }
