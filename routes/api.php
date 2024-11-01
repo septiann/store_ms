@@ -21,22 +21,27 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('/register', [UserController::class, 'register']);
+Route::post('/login', [UserController::class, 'login']);
+
+Route::middleware('auth:sanctum')->group(function() {
+    Route::post('/logout', [UserController::class, 'logout']);
+    Route::get('/user', function(Request $request) {
+        return $request->user();
+    });
+
+    // Users
+    Route::prefix('users')->group(function () {
+        Route::get('/', [UserController::class, 'index']);
+        Route::get('/{username}', [UserController::class, 'show']);
+        Route::put('/{id}', [UserController::class, 'update']);
+        Route::delete('/{id}', [UserController::class, 'destroy']);
+    });
 });
 
-Route::controller(UserController::class)->group(function() {
-    Route::get('/users', 'index')->middleware('auth:sanctum');
-    Route::get('/users/{id}', 'show');
-    Route::put('/users/{id}', 'update');
-    Route::delete('/users/{id}', 'destroy');
+// -----------------------------------------------------------------------
 
-    Route::post('/register', 'register');
-    Route::post('/login', 'login');
-    Route::post('/logout', 'logout')->middleware('auth:sanctum');
-});
-
-Route::controller(CategoryController::class)->group(function() {
+/* Route::controller(CategoryController::class)->group(function() {
     Route::get('/categories', 'index');
     Route::post('/categories', 'store');
     Route::get('/categories/{id}', 'show');
@@ -79,4 +84,4 @@ Route::controller(EmployeeController::class)->group(function() {
     Route::get('/employees/{id}', 'show');
     Route::put('/employees/{id}', 'update');
     Route::delete('/employees/{id}', 'destroy');
-});
+}); */
