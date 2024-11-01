@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreCategoryRequest;
-use App\Models\Category;
+use App\Models\Unit;
+use App\Http\Requests\StoreUnitRequest;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
-class CategoryController extends Controller
+class UnitController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,35 +14,35 @@ class CategoryController extends Controller
     public function index()
     {
         $message = "";
-        $categories = Category::all();
+        $units = Unit::all();
 
-        if (count($categories) < 1) {
+        if (count($units) < 1) {
             $message = "Data is empty";
         }
 
         return response()->json([
             'success' => true,
             'message' => $message,
-            'data' => $categories,
+            'data' => $units,
             'errors' => []
-        ], 200);
+        ], 404);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCategoryRequest $request)
+    public function store(StoreUnitRequest $request)
     {
         // Validation
         $validatedData = $request->validated();
 
         // Action
-        Category::create($validatedData);
+        Unit::create($validatedData);
 
         return response()->json([
             'success' => true,
-            'message' => 'Category created successfully!',
-            'data' => [],
+            'message' => 'Unit created successfully!',
+            'data' => '',
             'errors' => []
         ], 201);
     }
@@ -53,12 +52,12 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        $category = Category::findOrFail($id);
+        $unit = Unit::findOrFail($id);
 
         return response()->json([
             'success' => true,
             'message' => '',
-            'data' => $category,
+            'data' => $unit,
             'errors' => []
         ], 200);
     }
@@ -69,24 +68,24 @@ class CategoryController extends Controller
     public function update(Request $request, string $id)
     {
         // Validation
-        $validatedDate = $request->validate([
-            'name' => 'required|unique:categories,name,'.$id,
-            'slug' => 'required|unique:categories,slug,'.$id,
-            'description' => 'nullable'
+        $request->validate([
+            'name' => 'required',
+            'slug' => 'required',
+            'short_code' => 'nullable'
         ]);
 
         // Action
-        $post = Category::findOrFail($id);
+        $post = Unit::findOrFail($id);
 
         $post->name = $request->name;
         $post->slug = $request->slug;
-        $post->description = $request->description;
+        $post->short_code = $request->short_code;
 
         $post->save();
 
         return response()->json([
             'success' => true,
-            'message' => 'Category updated successfully!',
+            'message' => 'Unit updated successfully!',
             'data' => $post,
             'errors' => []
         ], 200);
@@ -97,13 +96,13 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        $deleteCategory = Category::findOrFail($id);
+        $deleteUnit = Unit::findOrFail($id);
 
-        $deleteCategory->delete();
+        $deleteUnit->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Category deleted successfully!',
+            'message' => 'Unit deleted successfully!',
             'data' => '',
             'errors' => []
         ], 200);
