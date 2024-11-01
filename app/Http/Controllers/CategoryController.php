@@ -72,7 +72,8 @@ class CategoryController extends Controller
         $validatedDate = $request->validate([
             'name' => 'required|unique:categories,name,'.$id,
             'slug' => 'required|unique:categories,slug,'.$id,
-            'description' => 'nullable'
+            'description' => 'nullable',
+            'code' => 'required|string'
         ]);
 
         // Action
@@ -81,6 +82,7 @@ class CategoryController extends Controller
         $post->name = $request->name;
         $post->slug = $request->slug;
         $post->description = $request->description;
+        $post->code = $request->code;
 
         $post->save();
 
