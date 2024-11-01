@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreProductDetailRequest;
+use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
-use App\Models\Product\MProduct;
-use App\Models\Product\TProduct;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Exception;
 
 class ProductController extends Controller
 {
@@ -18,7 +14,7 @@ class ProductController extends Controller
     public function index()
     {
         $message = "";
-        $products = MProduct::all();
+        $products = Product::all();
 
         if (count($products) < 1) {
             $message = "Data is empty";
@@ -29,7 +25,7 @@ class ProductController extends Controller
             'message' => $message,
             'data' => $products,
             'errors' => []
-        ], Response::HTTP_OK);
+        ], 404);
     }
 
     /**
@@ -41,130 +37,99 @@ class ProductController extends Controller
         $validatedData = $request->validated();
 
         // Action
-        MProduct::create($validatedData);
+        Product::create($validatedData);
+
+        // Handle Upload Image
+        /* if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = hexdec(uniqid()) . '.' . $file->getClientOriginalExtension();
+
+            $file->storeAs('products/', $filename, 'public');
+            $product->update([
+                'image' => $filename
+            ]);
+        } */
 
         return response()->json([
             'success' => true,
             'message' => 'Product created successfully!',
             'data' => '',
             'errors' => []
-        ], Response::HTTP_CREATED);
-    }
-
-    public function restockProduct(StoreProductDetailRequest $request)
-    {
-        // Validation
-        $validatedData = $request->validated();
-
-        // Action
-        // Update initial_stock in m_product
-        $update_stock = $this->updateStockProduct($validatedData);
-
-        // Insert to t_products
-        if ($update_stock) {
-            TProduct::create($validatedData);
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Product stock updated successfully!',
-            'data' => '',
-            'errors' => []
-        ], Response::HTTP_OK);
+        ], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(int $id)
     {
-        $product = MProduct::findOrFail($id);
+        $product = Product::findOrFail($id);
 
         return response()->json([
             'success' => true,
             'message' => '',
             'data' => $product,
             'errors' => []
-        ], Response::HTTP_OK);
+        ], 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, int $id)
     {
         // Validation
         $request->validate([
-            'name' => 'required|string',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric',
-            'initial_stock' => 'required|numeric',
-            'category_id' => 'required|numeric',
-            'supplier_id' => 'required|numeric',
-            'barcode' => 'required|string'
-        ], Response::HTTP_OK);
+            'category_id'   => 'required|numeric',
+            'unit_id'       => 'required|numeric',
+            'name'          => 'required|string',
+            'quantity'      => 'required|numeric',
+            'buying_price'  => 'required|numeric',
+            'selling_price' => 'required|numeric',
+            'stock'         => 'required|numeric',
+            'tax'           => 'nullable|numeric',
+            'tax_type'      => 'nullable|numeric',
+            'notes'         => 'nullable|max:100'
+        ]);
 
         // Action
-        $updateProduct = MProduct::findOrFail($id);
+        $post = Product::findOrFail($id);
 
-        $updateProduct->name = $request->name;
-        $updateProduct->description = $request->description;
-        $updateProduct->price = $request->price;
-        $updateProduct->initial_stock = $request->initial_stock;
-        $updateProduct->category_id = $request->category_id;
-        $updateProduct->supplier_id = $request->supplier_id;
-        $updateProduct->barcode = $request->barcode;
+        $post->category_id  = $request->category_id;
+        $post->unit_id      = $request->unit_id;
+        $post->name         = $request->name;
+        $post->quantity     = $request->quantity;
+        $post->buying_price = $request->buying_price;
+        $post->selling_price= $request->selling_price;
+        $post->stock        = $request->stock;
+        $post->tax          = $request->tax;
+        $post->tax_type     = $request->tax_type;
+        $post->notes        = $request->notes;
 
-        $updateProduct->save();
+        $post->save();
 
         return response()->json([
             'success' => true,
             'message' => 'Product updated successfully!',
-            'data' => $updateProduct,
+            'data' => $post,
             'errors' => []
-        ], Response::HTTP_OK);
+        ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(int $id)
     {
-        $deleteProduct = MProduct::findOrFail($id);
+        $product = Product::findOrFail($id);
 
-        $deleteProduct->delete();
+        $product->delete();
 
         return response()->json([
             'success' => true,
             'message' => 'Product deleted successfully!',
             'data' => '',
             'errors' => []
-        ], Response::HTTP_OK);
-    }
-
-    private function updateStockProduct($data)
-    {
-        // Check data in m_products by product_id
-        $product = MProduct::findOrFail($data['product_id']);
-
-        if ($data['transaction_type'] === "IN") { // Ini terjadi karena ada restock atau supply barang baru dari supplier.
-            $product->initial_stock = $product->initial_stock + $data['quantity'];
-
-            $product->save();
-
-            return true;
-        } else if ($data['transaction_type'] === "OUT") { // Ini jarang terjadi, bisa disebabkan barang rusak atau lain-lain.
-            if ($product->initial_stock < $data['quantity']) {
-                $product->initial_stock = 0;
-            } else {
-                $product->initial_stock = $product->initial_stock - $data['quantity'];
-            }
-
-            $product->save();
-
-            return true;
-        }
-
-        return false;
+        ], 200);
     }
 }

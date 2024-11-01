@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Category;
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 class StoreProductRequest extends FormRequest
 {
@@ -22,13 +25,34 @@ class StoreProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric',
-            'initial_stock' => 'required|numeric',
-            'category_id' => 'required|numeric',
-            'supplier_id' => 'required|numeric',
-            'barcode' => 'required|string'
+            'category_id'   => 'required|numeric',
+            'unit_id'       => 'required|numeric',
+            'name'          => 'required|string',
+            'slug'          => 'required|string',
+            'code'          => 'required|string',
+            'quantity'      => 'required|numeric',
+            'buying_price'  => 'required|numeric',
+            'selling_price' => 'required|numeric',
+            'stock'         => 'required|numeric',
+            'tax'           => 'nullable|numeric',
+            'tax_type'      => 'nullable|numeric',
+            'notes'         => 'nullable|max:100'
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $category = Category::findOrFail($this->category_id);
+
+        $this->merge([
+            'slug' => Str::slug($this->name, '-'),
+            'code' => IdGenerator::generate([
+                'table' => 'products',
+                'field' => 'code',
+                'length' => 5,
+                'prefix' => $category->code,
+                'reset_on_prefix_change' => true
+            ])
+        ]);
     }
 }
