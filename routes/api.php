@@ -6,6 +6,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -37,19 +38,38 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::put('/{id}', [UserController::class, 'update']);
         Route::delete('/{id}', [UserController::class, 'destroy']);
     });
+
+    // Categories
+    Route::prefix('categories')->group(function () {
+        Route::get('/', [CategoryController::class, 'index']);
+        Route::post('/', [CategoryController::class, 'store']);
+        Route::get('/{id}', [CategoryController::class, 'show']);
+        Route::put('/{id}', [CategoryController::class, 'update']);
+        Route::delete('/{id}', [CategoryController::class, 'destroy']);
+    });
+
+    // Units
+    Route::prefix('units')->group(function () {
+        Route::get('/', [UnitController::class, 'index']);
+        Route::post('/', [UnitController::class, 'store']);
+        Route::get('/{id}', [UnitController::class, 'show']);
+        Route::put('/{id}', [UnitController::class, 'update']);
+        Route::delete('/{id}', [UnitController::class, 'destroy']);
+    });
+
+    // Products
+    Route::prefix('products')->group(function () {
+        Route::get('/', [ProductController::class, 'index']);
+        Route::post('/', [ProductController::class, 'store']);
+        Route::get('/{id}', [ProductController::class, 'show']);
+        Route::put('/{id}', [ProductController::class, 'update']);
+        Route::delete('/{id}', [ProductController::class, 'destroy']);
+    });
 });
 
 // -----------------------------------------------------------------------
 
-/* Route::controller(CategoryController::class)->group(function() {
-    Route::get('/categories', 'index');
-    Route::post('/categories', 'store');
-    Route::get('/categories/{id}', 'show');
-    Route::put('/categories/{id}', 'update');
-    Route::delete('/categories/{id}', 'destroy');
-});
-
-Route::controller(SupplierController::class)->group(function() {
+/* Route::controller(SupplierController::class)->group(function() {
     Route::get('/suppliers', 'index');
     Route::post('/suppliers', 'store');
     Route::get('/suppliers/{id}', 'show');
@@ -58,16 +78,6 @@ Route::controller(SupplierController::class)->group(function() {
 
     Route::post('/suppliers/detail', 'storeDetail');
     Route::get('/suppliers/detail/{id}', 'showDetail');
-});
-
-Route::controller(ProductController::class)->group(function() {
-    Route::get('/products', 'index');
-    Route::post('/products', 'store');
-    Route::get('/products/{id}', 'show');
-    Route::put('/products/{id}', 'update');
-    Route::delete('/products/{id}', 'destroy');
-
-    Route::post('/products/{id}/restock', 'restockProduct');
 });
 
 Route::controller(CustomerController::class)->group(function() {
