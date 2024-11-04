@@ -74,19 +74,20 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::put('/{id}', [SupplierController::class, 'update']);
         Route::delete('/{id}', [SupplierController::class, 'destroy']);
     });
+
+    // Customers
+    Route::prefix('customers')->group(function () {
+        Route::get('/', [CustomerController::class, 'index']);
+        Route::post('/', [CustomerController::class, 'store']);
+        Route::get('/{id}', [CustomerController::class, 'show']);
+        Route::put('/{id}', [CustomerController::class, 'update']);
+        Route::delete('/{id}', [CustomerController::class, 'destroy']);
+    });
 });
 
 // -----------------------------------------------------------------------
 
-/* Route::controller(CustomerController::class)->group(function() {
-    Route::get('/customers', 'index');
-    Route::post('/customers', 'store');
-    Route::get('/customers/{id}', 'show');
-    Route::put('/customers/{id}', 'update');
-    Route::delete('/customers/{id}', 'destroy');
-});
-
-Route::controller(EmployeeController::class)->group(function() {
+/* Route::controller(EmployeeController::class)->group(function() {
     Route::get('/employees', 'index');
     Route::post('/employees', 'store');
     Route::get('/employees/{id}', 'show');
