@@ -51,7 +51,7 @@ class Handler extends ExceptionHandler
         } else if ($e instanceof NotFoundHttpException) {
             return response()->json([
                 'success' => false,
-                'message' => 'This route is not found',
+                'message' => $e->getMessage(),
                 'data' => '',
                 'errors' => []
             ], 404);
