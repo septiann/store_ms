@@ -15,6 +15,11 @@ class Customer extends Model
         'name',
         'email',
         'phone',
-        'address'
+        'address',
+        'type',
+        'bank_name',
+        'account_holder',
+        'account_number',
+        'photo'
     ];
 }

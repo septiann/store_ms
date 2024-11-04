@@ -14,10 +14,15 @@ return new class extends Migration
         if (!Schema::hasTable('customers')) {
             Schema::create('customers', function (Blueprint $table) {
                 $table->id();
-                $table->string('name',100);
-                $table->string('email',100)->unique();
-                $table->string('phone',20)->unique();
-                $table->text('address');
+                $table->string('name');
+                $table->string('email')->unique()->nullable();
+                $table->string('phone')->unique()->nullable();
+                $table->text('address')->nullable();
+                $table->string('type')->nullable();
+                $table->string('bank_name')->nullable();
+                $table->string('account_holder')->nullable();
+                $table->string('account_number')->nullable();
+                $table->string('photo')->nullable();
                 $table->timestamps();
             });
         }
