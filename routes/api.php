@@ -4,6 +4,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UnitController;
@@ -83,14 +84,14 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::put('/{id}', [CustomerController::class, 'update']);
         Route::delete('/{id}', [CustomerController::class, 'destroy']);
     });
+
+    // Purchases
+    Route::prefix('purchases')->group(function() {
+        Route::get('/', [PurchaseController::class, 'index']);
+        Route::post('/', [PurchaseController::class, 'store']);
+        Route::get('/{status}', [PurchaseController::class, 'getPurchaseByStatus']);
+        Route::get('/s/{purchase}', [PurchaseController::class, 'show']);
+        Route::put('/u/{purchase}', [PurchaseController::class, 'update']);
+        Route::delete('/d/{purchase}', [PurchaseController::class, 'destroy']);
+    });
 });
-
-// -----------------------------------------------------------------------
-
-/* Route::controller(EmployeeController::class)->group(function() {
-    Route::get('/employees', 'index');
-    Route::post('/employees', 'store');
-    Route::get('/employees/{id}', 'show');
-    Route::put('/employees/{id}', 'update');
-    Route::delete('/employees/{id}', 'destroy');
-}); */
