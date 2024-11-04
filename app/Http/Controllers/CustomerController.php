@@ -40,6 +40,17 @@ class CustomerController extends Controller
         // Action
         Customer::create($validatedData);
 
+        // Handle Upload Image
+        /* if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = hexdec(uniqid()) . '.' . $file->getClientOriginalExtension();
+
+            $file->storeAs('products/', $filename, 'public');
+            $product->update([
+                'image' => $filename
+            ]);
+        } */
+
         return response()->json([
             'success' => true,
             'message' => 'Customer created successfully!',
@@ -71,9 +82,14 @@ class CustomerController extends Controller
         // Validation
         $request->validate([
             'name' => 'required|string',
-            'email' => 'required|email|unique:customers,email,'.$id,
-            'phone' => 'required|numeric|min_digits:9|max_digits:14|unique:customers,phone,'.$id,
-            'address' => 'nullable'
+            'email' => 'required|email|max:50|unique:customers,email,'.$id,
+            'phone' => 'required|string|max:25|unique:customers,phone,'.$id,
+            'address' => 'required|string|max:100',
+            'type' => 'required|string',
+            'bank_name' => 'max:25',
+            'account_holder' => 'max:50',
+            'account_number' => 'max:25',
+            'photo' => 'image|file|max:1024'
         ]);
 
         // Action
@@ -83,6 +99,10 @@ class CustomerController extends Controller
         $post->email = $request->email;
         $post->phone = $request->phone;
         $post->address = $request->address;
+        $post->type = $request->type;
+        $post->bank_name = $request->bank_name;
+        $post->account_holder = $request->account_holder;
+        $post->account_number = $request->account_number;
 
         $post->save();
 
