@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SaleController;
@@ -93,5 +95,18 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('/s/{purchase}', [PurchaseController::class, 'show']);
         Route::put('/u/{purchase}', [PurchaseController::class, 'update']);
         Route::delete('/d/{purchase}', [PurchaseController::class, 'destroy']);
+    });
+
+    // Order
+    Route::prefix('order')->group(function() {
+        // Route::get('/', [OrderController::class, 'index']);
+    });
+
+    // Cart
+    Route::prefix('cart')->group(function() {
+        Route::get('/', [CartController::class, 'show']);
+        Route::post('/add', [CartController::class, 'store']);
+        Route::delete('/delete/{id}', [CartController::class, 'destroy']);
+        Route::put('/update-quantity/{id}', [CartController::class, 'updateQuantity']);
     });
 });
