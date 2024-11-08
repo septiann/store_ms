@@ -3,15 +3,16 @@
 namespace App\Exceptions;
 
 use BadMethodCallException;
+use DB;
+use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
+use PDOException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use DB;
 use Throwable;
-use PDOException;
 
 class Handler extends ExceptionHandler
 {
@@ -59,7 +60,7 @@ class Handler extends ExceptionHandler
             return response()->json([
                 'success' => false,
                 'message' => 'Bad method called',
-                'data' => '',
+                'data' => $e->getMessage(),
                 'errors' => []
             ], 404);
         } else if ($e instanceof ValidationException) {
@@ -92,6 +93,13 @@ class Handler extends ExceptionHandler
                 'data' => '',
                 'errors' => $e
             ], 500);
+        } else if ($e instanceof Exception) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'data' => '',
+                'errors' => ''
+            ], 403);
         } else {
             return response()->json([
                 'success' => false,
