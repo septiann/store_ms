@@ -98,8 +98,13 @@ Route::middleware('auth:sanctum')->group(function() {
     });
 
     // Order
-    Route::prefix('order')->group(function() {
-        // Route::get('/', [OrderController::class, 'index']);
+    Route::prefix('orders')->group(function() {
+        Route::get('/', [OrderController::class, 'index']);
+        Route::post('/', [OrderController::class, 'store']);
+        Route::get('/{id}', [OrderController::class, 'show']);
+
+        Route::post('/process/{id}', [OrderController::class, 'processOrder']);
+        Route::post('/cancel/{id}', [OrderController::class, 'cancelOrder']);
     });
 
     // Cart
